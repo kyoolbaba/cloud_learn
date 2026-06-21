@@ -1,0 +1,18 @@
+# Never commit account-specific values or credentials
+m3-aws/config.sh
+*.pem
+*.tfvars
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Lab outputs
+result-*.parquet
+*.zip
+out.json
+m2-docker/data/
+
+# Python junk
+__pycache__/
+*.pyc
+.venv/

@@ -1,0 +1,5 @@
+# Pinned so the image builds identically every time (reproducibility = the point of Docker).
+# When you swap in your real db_polars_app.py, add: polars statsforecast mlforecast
+# hierarchicalforecast utilsforecast lightgbm  — and expect a bigger, slower image.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0

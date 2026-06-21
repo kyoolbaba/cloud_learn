@@ -1,0 +1,76 @@
+{
+  "Comment": "Forecast fan-out: split SKUs into N shards, run them in PARALLEL on Fargate via a Map state, then aggregate. This is the 'make a 2-hour job take 10 minutes' pattern. ASL = Amazon States Language. Replace ACCOUNT_ID/REGION/cluster/subnet/sg. The Map's ItemsPath expects the input: {\"shards\": [{\"shard\":0,...}, {\"shard\":1,...}, ...]}.",
+  "StartAt": "FanOut",
+  "States": {
+    "FanOut": {
+      "Type": "Map",
+      "ItemsPath": "$.shards",
+      "MaxConcurrency": 10,
+      "ResultPath": "$.shardResults",
+      "Iterator": {
+        "StartAt": "RunShard",
+        "States": {
+          "RunShard": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::ecs:runTask.sync",
+            "Comment": "runTask.sync = Step Functions waits for this Fargate task to FINISH before the iteration completes.",
+            "Parameters": {
+              "Cluster": "forecast-cluster",
+              "TaskDefinition": "forecast-engine",
+              "LaunchType": "FARGATE",
+              "NetworkConfiguration": {
+                "AwsvpcConfiguration": {
+                  "Subnets": ["subnet-xxx"],
+                  "SecurityGroups": ["sg-zzz"],
+                  "AssignPublicIp": "ENABLED"
+                }
+              },
+              "Overrides": {
+                "ContainerOverrides": [
+                  {
+                    "Name": "forecast-engine",
+                    "Environment": [
+                      { "Name": "SHARD", "Value.$": "States.Format('{}', $.shard)" },
+                      { "Name": "BUCKET", "Value": "milan-forecast-lab" }
+                    ]
+                  }
+                ]
+              }
+            },
+            "Retry": [
+              { "ErrorEquals": ["States.ALL"], "IntervalSeconds": 5, "MaxAttempts": 2, "BackoffRate": 2.0 }
+            ],
+            "Catch": [
+              { "ErrorEquals": ["States.ALL"], "Next": "ShardFailed" }
+            ],
+            "End": true
+          },
+          "ShardFailed": {
+            "Type": "Pass",
+            "Result": { "status": "failed" },
+            "End": true
+          }
+        }
+      },
+      "Next": "Aggregate"
+    },
+    "Aggregate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Comment": "Final task: concatenate every shard's parquet in S3 into one forecast.parquet.",
+      "Parameters": {
+        "Cluster": "forecast-cluster",
+        "TaskDefinition": "forecast-aggregate",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": ["subnet-xxx"],
+            "SecurityGroups": ["sg-zzz"],
+            "AssignPublicIp": "ENABLED"
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}

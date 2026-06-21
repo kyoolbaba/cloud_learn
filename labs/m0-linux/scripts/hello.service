@@ -1,0 +1,25 @@
+# hello.service — a ready-made systemd unit (Module 0, Lab 6).
+# Install:   sudo cp hello.service /etc/systemd/system/hello.service
+#            (edit User= / WorkingDirectory= to your username first)
+#            sudo systemctl daemon-reload
+#            sudo systemctl enable --now hello
+# Inspect:   systemctl status hello      journalctl -u hello -f
+# Test:      curl localhost:8003
+#
+# Prereq in WSL: systemd must be ON. Check:  ps -p 1 -o comm=   (want 'systemd').
+# If not, put  [boot]\nsystemd=true  in /etc/wsl.conf, then `wsl --shutdown` and reopen.
+
+[Unit]
+Description=Hello HTTP server (M0 lab)
+After=network.target
+
+[Service]
+Type=simple
+User=milan                                  # <-- change to your Linux username
+WorkingDirectory=/tmp
+ExecStart=/usr/bin/python3 -m http.server 8003
+Restart=on-failure                          # auto-restart if it crashes
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target                  # start at boot in normal multi-user mode

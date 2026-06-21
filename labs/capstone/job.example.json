@@ -1,0 +1,10 @@
+{
+  "_comment": "Example job.json the app uploads to s3://bucket/jobs/<job_id>/job.json. The engine reads it. Mirrors what the 'Run in cloud' toggle sends.",
+  "job_id": "example1",
+  "mapping": { "date": "ds", "target": "y", "keys": ["unique_id"] },
+  "models": ["AutoARIMA", "Theta", "trend"],
+  "horizon": 12,
+  "n_series": 500,
+  "cv": { "windows": 3, "step": 12 },
+  "shards": 10
+}

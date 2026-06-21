@@ -1,0 +1,33 @@
+# docker-compose.yml — declare how to build & run the app in one file.
+# Up:    docker compose up --build       (foreground; Ctrl-C stops)
+# Up:    docker compose up -d            (background)
+# Logs:  docker compose logs -f
+# Down:  docker compose down             (stop + remove)
+#
+# Compose shines when you have MULTIPLE containers (app + db + cache) that need to
+# talk. Here it's one service, but the patterns (ports, env, volumes) are identical.
+
+services:
+  app:
+    build: .                       # build using ./Dockerfile
+    image: forecast-app:0.1
+    ports:
+      - "8011:8011"                # HOST:CONTAINER — http://localhost:8011
+    environment:
+      APP_ENV: docker-compose      # shows up at GET /api/info (env-var injection)
+      APP_VERSION: "0.1.0"
+      DATA_DIR: /data
+    volumes:
+      - ./data:/data               # persist data across container restarts
+    restart: unless-stopped        # auto-restart like a little production service
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8011/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # Example of a second service you'd add later (a Redis cache, a Postgres db...):
+  # redis:
+  #   image: redis:7-alpine
+  #   ports: ["6379:6379"]

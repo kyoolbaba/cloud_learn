@@ -1,0 +1,27 @@
+{
+  "_comment": "Least-privilege IAM policy for the forecast-worker user/role. It can ONLY touch the one bucket and start/stop instances — nothing else. Replace BUCKET_NAME with your real bucket. Attach: aws iam put-user-policy --user-name forecast-worker --policy-name forecast-min --policy-document file://iam_forecast_worker_policy.json",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadWriteOneBucketObjects",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::BUCKET_NAME/*"
+    },
+    {
+      "Sid": "ListThatOneBucket",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::BUCKET_NAME"
+    },
+    {
+      "Sid": "StartStopDescribeInstances",
+      "Effect": "Allow",
+      "Action": ["ec2:StartInstances", "ec2:StopInstances", "ec2:DescribeInstances"],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": { "aws:ResourceTag/project": "forecast" }
+      }
+    }
+  ]
+}

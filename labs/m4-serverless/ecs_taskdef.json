@@ -1,0 +1,30 @@
+{
+  "_comment": "Fargate task definition: how ECS should run one container. Replace ACCOUNT_ID and REGION. Register with: aws ecs register-task-definition --cli-input-json file://ecs_taskdef.json. Fargate = run a container with NO server to manage; you pay per-second while the task runs.",
+  "family": "forecast-engine",
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/forecast-task-role",
+  "containerDefinitions": [
+    {
+      "name": "forecast-engine",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/forecast-engine:0.1",
+      "essential": true,
+      "environment": [
+        { "name": "BUCKET", "value": "milan-forecast-lab" }
+      ],
+      "command": ["python3", "worker.py"],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/forecast-engine",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+# crontab.examples — ready-made cron lines (Module 0, Lab 7).
+# Install one:  crontab -e   then paste a line.   List: crontab -l   Remove: crontab -e (delete line)
+# In WSL the cron daemon may be off:  sudo service cron start
+#
+# Field layout:   minute hour day-of-month month day-of-week   command
+#                 (0-59) (0-23) (1-31)      (1-12) (0-6, 0=Sun)
+# Special: * = every,  */N = every N,  a,b = list,  a-b = range.
+
+# Every minute: append a timestamped heartbeat (great for *watching* cron work)
+* * * * * echo "$(date) heartbeat" >> $HOME/heartbeat.log
+
+# Every 5 minutes
+*/5 * * * * echo "$(date) five-min tick" >> $HOME/heartbeat.log
+
+# Daily at 02:00 — e.g. run a backup
+0 2 * * * /home/milan/labs/m0-linux/scripts/backup.sh /home/milan/demo
+
+# Every Monday at 03:30
+30 3 * * 1 echo "weekly job $(date)" >> $HOME/weekly.log
+
+# Top of every hour
+0 * * * * echo "hourly $(date)" >> $HOME/hourly.log
+
+# Reading practice (say these out loud):
+#   15 14 * * *     -> 14:15 every day
+#   0 0 1 * *       -> midnight on the 1st of every month
+#   */10 9-17 * * 1-5 -> every 10 min, 9am-5pm, Mon-Fri (business hours)
