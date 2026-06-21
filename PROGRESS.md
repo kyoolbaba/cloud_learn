@@ -138,15 +138,18 @@ Track lives in `certs/aws-cloud-practitioner-clf-c02/`. The projects above doubl
 - [ ] Lake Formation / Unity Catalog governance notes written
 
 ## MLOps
-> Learn: [[06-mlops-basics]] · [[STUDY_PLAN|Module 5.6]] · cert [[MLA-C01]] 🎯
-- [ ] Local model training completed
-- [ ] Experiment tracking tested
-- [ ] Model artifact saved to S3
-- [ ] Model registry notes completed
-- [ ] Batch inference tested
-- [ ] Endpoint deployment tested
-- [ ] Monitoring and drift notes completed
-- [ ] Retraining pipeline designed
+> Learn: [[06-mlops-basics]] · **hands-on: [[mlops/README|☁️ MLOps track (cloud-only)]]** · cert [[MLA-C01]] 🎯
+> Setup once: [[mlops/00-cloud-workspace|SageMaker Studio workspace]] · craft layer: [[mlops/code-craft]]
+- [ ] 00 — Cloud workspace (Studio + CloudShell + S3 bucket) set up
+- [ ] L1 — Experiment tracking (SageMaker Experiments)
+- [ ] L2 — Feature store (online + offline)
+- [ ] L3 — Training job → model registry + approval gate
+- [ ] L4 — Batch inference (Batch Transform)
+- [ ] L5 — Real-time endpoint (deployed **and deleted**)
+- [ ] L6 — Model Monitor + drift alarm
+- [ ] L7 — SageMaker Pipeline (train→eval→register)
+- [ ] 🏁 Capstone — drift→retrain loop (EventBridge)
+- [ ] Code-craft self-check passed (src modules, config, tests, logging) → [[mlops/code-craft]]
 
 ## FinOps
 > Learn: [[07-finops-basics]] · [[STUDY_PLAN|Module 6.5]]

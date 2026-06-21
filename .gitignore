@@ -36,3 +36,6 @@ Thumbs.db
 .obsidian/workspace-mobile.json
 .obsidian/cache
 .trash/
+
+# --- Nested study repos (have their own git history + remote) ---
+production-ready-data-science-code/

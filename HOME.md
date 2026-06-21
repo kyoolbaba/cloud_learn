@@ -33,6 +33,7 @@ folder. Every note links together — use **graph view** and **tags** to navigat
 - Foundations: [[foundations/01-absolute-basics|1 · Absolute basics]] · [[02-terminal-survival|2 · Terminal survival]] · [[03-glossary|3 · Glossary]]
 - **Career domains:** [[04-git-cicd-basics|Git + CI/CD]] · [[05-lakehouse-basics|Lakehouse]] · [[06-mlops-basics|MLOps]] · [[07-finops-basics|FinOps]] · [[08-kubernetes-basics|Kubernetes]]
 - [[labs/README|Labs (M0–M6 + capstone)]] · [[projects/README|Projects (00–12, one per service)]] · [[portfolio/README|🗂️ Portfolio (proof of work)]]
+- ☁️ **[[mlops/README|MLOps track (cloud-only hands-on: L1–L7 + capstone)]]** — SageMaker lifecycle, runs entirely in the cloud
 - [[projects/SETUP-personal-aws|⚠️ Set up a personal AWS account first]]
 
 ## 🏷️ Tag legend
